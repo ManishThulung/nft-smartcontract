@@ -3,7 +3,7 @@ const { developmentChains } = require("../helper-hardhar-config")
 const { verify } = require("../utils/verify")
 
 module.exports = async function({getNamedAccounts, deployments}) {
-  const {deploy, log} = deployments()
+  const {deploy, log} = deployments
   const {deployer} = await getNamedAccounts()
 
   log("--------------------------")
@@ -24,4 +24,4 @@ module.exports = async function({getNamedAccounts, deployments}) {
 }
 
 
-
+module.exports.tags = ["all", "basicnft", "main"]
