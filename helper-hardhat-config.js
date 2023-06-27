@@ -1,6 +1,6 @@
 const networkConfig = {
   31337: {
-    name: "localhost",
+    name: "hardhat",
     ethUsdPriceFeed: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
     gasLane:
       "0x474e34a077df58807dbe9c96d3c009b23b3c6d0cce433e59bbf5b34f823bc56c", // 30 gwei
@@ -23,7 +23,7 @@ const networkConfig = {
 
 const developmentChains = ["hardhat", "localhost"];
 
-mudule.exports = {
+module.exports = {
   networkConfig,
   developmentChains,
 };
