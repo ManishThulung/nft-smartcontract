@@ -22,7 +22,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
     VRFCoordinatorV2Interface private immutable i_vrfCoordinator;
     uint64 private immutable i_subscriptionId;
     bytes32 private immutable i_gasLane;
-    uint32 private immutable i_callbackGalLimit;
+    uint32 private immutable i_callbackGasLimit;
     uint16 private constant REQUESR_CONFIRMATIONS = 3;
     uint32 private constant NUM_WORDS = 1;
 
@@ -43,14 +43,14 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         address vrfCoordinatorV2,
         uint64 subscriptionId,
         bytes32 gasLane,
-        uint32 callbackGalLimit,
+        uint32 callbackGasLimit,
         string[3] memory dogTokenUris,
         uint256 mintFee
     ) VRFConsumerBaseV2(vrfCoordinatorV2) ERC721("Random IPFS NFT", "RIT") {
         i_vrfCoordinator = VRFCoordinatorV2Interface(vrfCoordinatorV2);
         i_subscriptionId = subscriptionId;
         i_gasLane = gasLane;
-        i_callbackGalLimit = callbackGalLimit;
+        i_callbackGasLimit = callbackGasLimit;
         s_dogTokenUris = dogTokenUris;
         i_mintFee = mintFee;
     }
@@ -63,7 +63,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
             i_gasLane,
             i_subscriptionId,
             REQUESR_CONFIRMATIONS,
-            i_callbackGalLimit,
+            i_callbackGasLimit,
             NUM_WORDS
         );
         s_requestIdToSender[requestId] = msg.sender;
@@ -84,6 +84,7 @@ contract RandomIpfsNft is VRFConsumerBaseV2, ERC721URIStorage, Ownable {
         // 45 -> St. BERNARD
         // 79 -> St. BERNARD
         Breed dogBreed = getBreedModdedRng(moddedRng);
+        s_tokenCounter += s_tokenCounter;
         _safeMint(dogOwner, newTokenId);
         _setTokenURI(newTokenId, s_dogTokenUris[uint256(dogBreed)]);
         emit NftMinted(dogBreed, dogOwner);
