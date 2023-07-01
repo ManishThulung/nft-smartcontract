@@ -70,6 +70,9 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     waitConfirmatons: network.config.blockConfirmatons || 1,
   });
 
+  // have to add this as vrf implies this function to emit an event and kick off the random request
+  await vrfCoordinatorV2Mock.addConsumer(subscriptionId, randomIpfsNft.address);
+
   // Verify the deployment
   if (
     !developmentChains.includes(network.name) &&
