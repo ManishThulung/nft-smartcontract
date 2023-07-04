@@ -53,11 +53,65 @@ const { assert, expect } = require("chai");
 
         it("emits an event and kicks of the random request", async () => {
           const fee = await randomIpfsNft.getMintFee();
-          console.log(fee);
           await expect(
             randomIpfsNft.requestNft({ value: fee.toString() })
           ).to.emit(randomIpfsNft, "NftRequested");
-          console.log("end");
+        });
+      });
+
+      describe("fulfillRandomWords", () => {
+        it("mints NFT after random number is returned", async () => {
+          await new Promise(async (resolve, reject) => {
+            randomIpfsNft.once("NftMinted", async () => {
+              try {
+                const tokenUri = await randomIpfsNft.tokenURI("0");
+                const tokenCounter = await randomIpfsNft.getTokenCounter();
+
+                assert.equal(tokenCounter.toString(), "0");
+                assert(tokenUri.includes("ipfs://"));
+                resolve();
+              } catch (error) {
+                console.log(error);
+                reject(error);
+              }
+            });
+
+            try {
+              const fee = await randomIpfsNft.getMintFee();
+              const tx = await randomIpfsNft.requestNft({
+                value: fee.toString(),
+              });
+              // console.log(tx, "tx");
+              const txReceipt = await tx.wait(1);
+              // console.log(txReceipt, "receit");
+              await vrfCoordinatorV2Mock.fulfillRandomWords(
+                txReceipt.events[1].args.requestId,
+                randomIpfsNft.address
+              );
+            } catch (error) {
+              console.log(error);
+            }
+          });
+        });
+      });
+
+      describe("getBreedModdedRng", () => {
+        it("should return pug if random number is < 10", async () => {
+          const value = await randomIpfsNft.getBreedModdedRng(9);
+          assert.equal(0, value);
+        });
+        it("should return st bernard if random number is between 10 - 40", async () => {
+          const value = await randomIpfsNft.getBreedModdedRng(38);
+          assert.equal(1, value);
+        });
+        it("should return pug if random number between 40 - 99", async () => {
+          const value = await randomIpfsNft.getBreedModdedRng(98);
+          assert.equal(2, value);
+        });
+        it("should revert if random number > 99", async () => {
+          await expect(randomIpfsNft.getBreedModdedRng(101)).to.be.revertedWith(
+            "RandomIpfsNft__RangeOutOfBound"
+          );
         });
       });
     });
