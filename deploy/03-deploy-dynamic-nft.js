@@ -15,9 +15,19 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   const chainId = network.config.chainId;
   let ethUsdPriceFeedAddress;
 
-  if (!developmentChains.includes(network.name)) {
-    const ethUsdAggregator = await ethers.getContract("MockV3Aggregator");
-    ethUsdPriceFeedAddress = ethUsdAggregator.address;
+  // if (!developmentChains.includes(network.name)) {
+  //   const ethUsdAggregator = await ethers.getContract(
+  //     "MockV3Aggregator",
+  //     deployer
+  //   );
+  //   ethUsdPriceFeedAddress = ethUsdAggregator.address;
+  // } else {
+  //   ethUsdPriceFeedAddress = networkConfig[chainId]["ethUsdPriceFeed"];
+  // }
+  if (chainId == 31337) {
+    // Find ETH/USD price feed
+    const EthUsdAggregator = await deployments.get("MockV3Aggregator");
+    ethUsdPriceFeedAddress = EthUsdAggregator.address;
   } else {
     ethUsdPriceFeedAddress = networkConfig[chainId]["ethUsdPriceFeed"];
   }

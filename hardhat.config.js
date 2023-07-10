@@ -30,6 +30,7 @@ module.exports = {
       blockConfirmations: 6,
       saveDeployments: true,
       chainId: 11155111,
+      gas: 5000000,
     },
     goerli: {
       chainId: 5,
